@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+
+
+		<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?lang=sql&amp;skin=desert"></script>
+
+		<title>Test Page Title</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	</head>
+
+	<body>
+
+		<?prettify linenums=1?>
+		<pre class="prettyprint">
+
+			-- *******************************************************************************************
+			-- *******************************************************************************************
+			--         This section below is for creating a database and loading data into tables
+			-- *******************************************************************************************
+			-- *******************************************************************************************
+
+			SET GLOBAL local_infile  = 1;
+
+			CREATE DATABASE IF NOT EXISTS cocolit;
+			SHOW DATABASES;
+
+			USE cocolit;
+
+			Visits Table
+			create table if not exists visits(
+			       day date,
+			       ua_form_factor varchar(255),
+			       location_city varchar(255),
+			       location_country varchar(255),
+			       total_visitors int,
+			       total_sessions int,
+			       total_bounce_rate float,
+			       total_carts int,
+			       total_checkouts int,
+			       total_conversion float,
+			       total_orders_placed int,
+			       avg_duration varchar(255)
+			);
+
+			load data local infile '/Users/aminsafarini/Desktop/Portfolio/Tableau/e-commerce/visits_2017-06-06_2020-11-13.csv'
+			into table visits
+			fields terminated by ','
+			lines terminated by '\n'
+			ignore 1 lines
+			(day,ua_form_factor, location_city, location_country, total_visitors, total_sessions, total_bounce_rate,
+			 total_carts, total_checkouts, total_conversion, total_orders_placed, avg_duration);
+
+			SELECT * FROM visits; -- loaded successfully
+
+			Sales Table
+			create table if not exists sales(
+			        day date,
+			        fulfillment_status varchar(255),
+			        order_id varchar(255), -- number changed when I set it to int for some reason...?????
+			        order_name varchar(255),
+			        sale_kind varchar(255),
+			        sale_line_type varchar(255),
+			        cost_tracked varchar(255),
+			        billing_city varchar(255),
+			        billing_country varchar(255),
+			        billing_postal_code varchar(255),
+			        customer_id varchar(255), -- number changed when I set it to int for some reason...?????
+			        customer_name varchar(255),
+			        customer_email varchar(255),
+			        customer_type varchar(255),
+			        product_id varchar(255), -- number changed when I set it to int for some reason...?????
+			        product_price float,
+			        product_title varchar(255),
+			        product_type varchar(255),
+			        shipping_city varchar(255),
+			        shipping_country varchar(255),
+			        shipping_postal_code varchar(255),
+			        orders int,
+			        gross_sales float,
+			        discounts float,
+			        returns float,
+			        net_sales float,
+			        shipping float,
+			        taxes float,
+			        total_sales float,
+			        average_order_value float,
+			        total_cost float,
+			        gross_profit float,
+			        units_per_transaction int,
+			        gross_margin float,
+			        customers int,
+			        net_quantity int,
+			        ordered_item_quantity int,
+			        returned_item_quantity int
+			);
+
+			load data local infile '/Users/aminsafarini/Desktop/Portfolio/Tableau/e-commerce/sales_2017-06-06_2020-11-13.csv'
+			into table sales
+			fields terminated by ','
+			lines terminated by '\n'
+			ignore 1 lines
+			(day, fulfillment_status, order_id, order_name, sale_kind, sale_line_type, cost_tracked,
+			billing_city, billing_country, billing_postal_code, customer_id, customer_name, customer_email,
+			customer_type, product_id, product_price, product_title, product_type, shipping_city, shipping_country, shipping_postal_code,
+			orders, gross_sales, discounts, returns, net_sales, shipping, taxes, total_sales, average_order_value,
+			total_cost, gross_profit, units_per_transaction, gross_margin, customers, net_quantity, ordered_item_quantity, returned_item_quantity);
+
+			SELECT * FROM sales; -- loaded successfully
+
+			-- SELECT CAST(25.65 AS int); to convert ids to int if needed in the sales table
+
+			-- ***************************************************
+			-- ***************************************************
+			--         This section below is for quering
+			-- ***************************************************
+			-- ***************************************************
+
+			SELECT * FROM sales;
+			SELECT * FROM visits;
+
+
+		</pre>
+
+		<br><br>
+
+
+
+	</body>
+</html>
