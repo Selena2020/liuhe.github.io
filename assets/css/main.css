@@ -3260,7 +3260,18 @@ input, select, textarea {
 		}
 
 		.wrapper.style1 {
-			background-color: #36486b;
+			
+			background: gray;
+		color:white;
+		text align: center;
+		diaplay: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-contents: center;
+		background-image: url('images/pngtree-technology-big-data-e-commerce-taobao-banner-background-image_186878.jpg');
+		background-repeat: no-repeat;
+		background-size: cover;
+		min-height: 100vh;
 		}
 
 		.wrapper.style1-alt {
@@ -3900,6 +3911,7 @@ input, select, textarea {
 		flex-direction: column;
 		align-items: center;
 		justify-contents: center;
+		background-attachment: fixed;
 		background-image: url('images/pngtree-technology-big-data-e-commerce-taobao-banner-background-image_186878.jpg');
 		background-repeat: no-repeat;
 		background-size: cover;
