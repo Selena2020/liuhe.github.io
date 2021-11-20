@@ -7,11 +7,17 @@
 /* Intro */
 
 	#intro {
-		background-attachment: fixed;
+		background: gray;
+		color:white;
+		text align: center;
+		diaplay: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-contents: center;
 		background-image: url('images/pngtree-technology-big-data-e-commerce-taobao-banner-background-image_186878.jpg');
-		background-position: top right;
 		background-repeat: no-repeat;
-		background-size: 100% 100%;
+		background-size: cover;
+		min-height: 100vh;
 
 		p {
 			font-size: 1.25em;
