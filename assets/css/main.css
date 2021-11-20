@@ -3261,18 +3261,7 @@ input, select, textarea {
 
 		.wrapper.style1 {
 			
-			background: gray;
-		color:white;
-		text align: center;
-		diaplay: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-contents: center;
-		background-image: url('images/pngtree-technology-big-data-e-commerce-taobao-banner-background-image_186878.jpg');
-		background-repeat: no-repeat;
-		background-size: cover;
-		min-height: 100vh;
-		}
+			background-color: #36486b;		}
 
 		.wrapper.style1-alt {
 			background-color: #493382;
