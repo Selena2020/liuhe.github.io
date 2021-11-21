@@ -3893,15 +3893,17 @@ input, select, textarea {
 /* Intro */
 
 	#intro {
-		ackground-attachment: fixed;
 		background-image: url("images/pngtree-technology-big-data-e-commerce-taobao-banner-background-image_186878.jpg");
-		background-position: top right;
 		background-repeat: no-repeat;
-		background-size: 100% 100%;
+		background-size: center;
 	}
 
 		#intro p {
 			font-size: 1.25em;
+		}
+                #intro h1 {
+			font-size: 2em;
+			text-align: center;
 		}
 
 			@media screen and (max-width: 980px) {
@@ -3917,6 +3919,10 @@ input, select, textarea {
 				#intro p {
 					font-size: 1em;
 				}
+				 #intro h1 {
+			                font-size: 2em;
+			                text-align: center;
+		               }
 
 			}
 
