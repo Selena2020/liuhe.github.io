@@ -3893,14 +3893,11 @@ input, select, textarea {
 /* Intro */
 
 	#intro {
-		background: gray;
-                color: white;
-                display: flex;
-                flex-direction: column;
-                background-image: url('images/pngtree-technology-big-data-e-commerce-taobao-banner-background-image_186878.jpg');
-                background-repeat: no-repeat;
-                background-size: cover;
-                min-height: 100vh;
+		ackground-attachment: fixed;
+		background-image: url("images/pngtree-technology-big-data-e-commerce-taobao-banner-background-image_186878.jpg");
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
 	}
 
 		#intro p {
