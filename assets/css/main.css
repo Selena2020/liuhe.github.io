@@ -3870,6 +3870,7 @@ input, select, textarea {
 						}
 
 					#sidebar nav a {
+						opacity: .6;
 						height: inherit;
 						line-height: inherit;
 						padding: 0;
@@ -3893,11 +3894,18 @@ input, select, textarea {
 /* Intro */
 
 	#intro {
-		ackground-attachment: fixed;
-		background-image: url("images/pngtree-technology-big-data-e-commerce-taobao-banner-background-image_186878.jpg");
-		background-position: top right;
-		background-repeat: no-repeat;
-		background-size: 100% 100%;
+		background: gray;
+  color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-image: url('img/pngtree-technology-big-data-e-commerce-taobao-banner-background-image_186878.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+}
 	}
 
 		#intro p {
