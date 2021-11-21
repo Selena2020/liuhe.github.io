@@ -3583,6 +3583,9 @@ input, select, textarea {
 			opacity: .6;
 			width: 100%;
 		}
+               #sidebar > .inner h2 {   
+		        margin-bottom: 5px;  }
+                }
 
 			body.is-ie #sidebar > .inner {
 				height: 100%;
