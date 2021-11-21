@@ -3782,7 +3782,8 @@ input, select, textarea {
 			}
 
 			#sidebar nav a:before {
-				background: #034f84;
+				color: white;
+				opacity:.6;
 			}
 
 			#sidebar nav a:after {
@@ -3810,6 +3811,7 @@ input, select, textarea {
 				}
 
 		body.is-preload #sidebar > .inner {
+			color:white;
 			opacity: 0.6;
 		}
 
@@ -3894,15 +3896,15 @@ input, select, textarea {
 /* Intro */
 
 	#intro {
-		ackground-attachment: fixed;
+		
 		background-image: url("images/pngtree-technology-big-data-e-commerce-taobao-banner-background-image_186878.jpg");
-		background-position: cover;
 		background-repeat: no-repeat;
-		background-size: 100% 100%;
+		background-size: center;
 	}
 
-		#intro p {
+		#intro h1, p {
 			font-size: 1.25em;
+			text-align: center;
 		}
 
 			@media screen and (max-width: 980px) {
