@@ -3587,12 +3587,7 @@ input, select, textarea {
 			body.is-ie #sidebar > .inner {
 				height: 100%;
 			}
-                 #sidebar nav > sidebar-brand {
-                        float: left;
-			height: 30px;
-			padding: 5px 5px;
-			
-                }
+                 
 		#sidebar nav > ul {
 			list-style: none;
 			padding: 0;
