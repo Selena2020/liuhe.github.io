@@ -3402,7 +3402,12 @@ input, select, textarea {
 			font-size: 1.25em;
 			font-weight: bold;
 		}
-
+                #header > sidebar-brand {
+                        float:left;
+			height:50px;
+			padding: 5px 5px;
+			
+                }
 		#header > nav {
 			-moz-flex: 1;
 			-webkit-flex: 1;
