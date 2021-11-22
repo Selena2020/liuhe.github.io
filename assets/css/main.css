@@ -3402,12 +3402,7 @@ input, select, textarea {
 			font-size: 1.25em;
 			font-weight: bold;
 		}
-                #header > sidebar-brand {
-                        float:left;
-			height:50px;
-			padding: 5px 5px;
-			
-                }
+                
 		#header > nav {
 			-moz-flex: 1;
 			-webkit-flex: 1;
@@ -3415,12 +3410,7 @@ input, select, textarea {
 			flex: 1;
 			text-align: right;
 		}
-                        #header > nav > sidebar-brand {
-                        float: left;
-			height: 30px;
-			padding: 5px 5px;
-			
-                }
+                       
 			#header > nav > ul {
 				margin: 0;
 				padding: 0;
@@ -3597,7 +3587,12 @@ input, select, textarea {
 			body.is-ie #sidebar > .inner {
 				height: 100%;
 			}
-
+                 #sidebar nav > sidebar-brand {
+                        float: left;
+			height: 30px;
+			padding: 5px 5px;
+			
+                }
 		#sidebar nav > ul {
 			list-style: none;
 			padding: 0;
