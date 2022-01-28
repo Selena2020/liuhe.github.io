@@ -1,0 +1,205 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+
+
+		<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?lang=sql&amp;skin=desert"></script>
+
+		<title>Test Page Title</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	</head>
+
+	<body>
+
+		<?prettify linenums=1?>
+		<pre class="prettyprint">
+
+/* Data Cleasing/Check */
+/*data check to ensure data quality before data manipulation*/
+libname SASDEMO '/folders/myfolders/sasuser.v94/SASDEMO/';
+filename CDR_DC '/folders/myfolders/sasuser.v94/SAS_CDR_DataCheck.csv';
+filename CDR_DV '/folders/myfolders/sasuser.v94/SAS_CDR_DataValidation.csv';
+/*import for data check, there are some invalid values for some variables
+will use this dataset for  data check*/
+%web_drop_table(SASDEMO.CDR_DataCheck);
+FILENAME CDR_DC '/home/u47550450/sasuser.v94/SAS_CDR_DataCheck.csv';
+
+PROC IMPORT DATAFILE=CDR_DC
+	DBMS=CSV
+	OUT=SASDEMO.CDR_DataCheck;
+	GETNAMES=YES;
+RUN;
+PROC CONTENTS DATA=SASDEMO.CDR_DataCheck; 
+RUN;
+%web_open_table(SASDEMO.CDR_DataCheck);
+PROC SORT DATA = SASDEMO.CDR_DATACHECK OUT = dataset  ;
+     BY   CDRID ;
+title "Frequency Counts for Selected Variables";
+proc freq data=dataset;
+ tables FirstResolved Satisfaction NPS Status/ nocum ;
+run;
+data rangetbl;
+input @1 errorid $8.
+@9 errorvar $14.
+@22 errorsas $40.;
+datalines;
+1.1     NPS           NPS not in (0,1,2,3,4,5,6,7,8,9,10)
+1.2     Satisfaction  Satisfaction not in (1,2,3,4,5)
+1.3     FirstResolved FirstResolved  not in (0,1)
+2.1     Status        Status not in ('Processed','Open')
+3.1     CustomerTier  prxmatch('/[^A-Z 0-9]/i',CustomerTier) not in (.)
+;
+run;
+data _null_;
+set rangetbl end=last;
+retain count;
+if _n_=1 then count=0;
+count=count+1;
+call symput('id'||left(trim(put(count,5.))),trim(errorid));
+call symput('var'||left(trim(put(count,5.))),trim(errorvar));
+call symput('code'||left(trim(put(count,5.))),trim(errorsas));
+if last then call symput ('checkct',left(trim(put(count,8.))));
+run;
+%put _user_;
+
+%macro checkvar(id, var, check );
+if &check then do;
+errorid ="&id.";  
+errorvar="&var.";
+errorval=&var;
+output;
+end;
+%mend checkvar;
+
+data error_ds (keep=CDRID errorid errorvar errorval);
+	set dataset;
+	length errorid errorvar $14 errorval $8 ;
+
+/*changed errorval from 8 to $8 to capture both numeric and charater*/
+	%macro runcheck;
+		%do j=1 %to &checkct;
+			%checkvar(%str(&&id&j), %str(&&var&j), %str(&&code&j));
+		%end;
+	%mend runcheck;
+
+	%runcheck;
+run;
+/*export to excel*/
+proc export data=WORK.ERROR_DS DBMS=xlsx
+outfile="/home/u47550450/sasuser.v94/ERROR_DS1.xlsx";
+run;
+/*data manipulation -- create the final dataset for reporting and analysis*/
+libname SASDEMO '/folders/myfolders/sasuser.v94/SASDEMO/';
+proc sql;
+	create table SASDEMO.FactCDR as 
+	select 
+		CDR.CDRID, 
+		CDR.CallDate, 
+		CDR.Start_TM, 
+		CDR.End_TM, 
+		CDR.CloseDate, 
+		intck('second',CDR.Start_TM,CDR.End_TM) as Length_Ineraction,
+		CDR.Status, 
+		CDR.Satisfaction, 
+		CDR.FirstResolved, 
+		CDR.NPS, 
+		CDR.CustomerTier, 
+		CDR.CustomerSegment, 
+		GEO.PostalCode as CX_PostalCode, 
+		GEO.EnglishCountryRegionName AS CX_Country, 
+		SEVT.SeverityType_Desc AS SeverityType, 
+		SERT.ServiceType_Desc AS ServiceType, 
+		HANT.HandleType_Desc AS HandleType, 
+		PRO.Name as Product,
+		PRG.Name as ProductGroup,
+		case when Status='Processed' then intck('day',CallDate,CloseDate) end as DaystoResolve,
+		DD.ReportWeekNumber as ReportWeekNumber,
+		cat(Agent.FirstName,'',Agent.LastName,'(',Agent.AgentID,')') as Agent,
+		put(ReportWeekStart, mmddyy10.) || " -- " || put(ReportWeekEnd, mmddyy10.) AS ReportWeek
+	from SASDEMO.CDR 
+		left join SASDEMO.DimCustomer CUS 
+	       ON CDR.CustomerKey=CUS.CustomerKey 
+	    left join SASDEMO.DimDate DD 
+	    	on CDR.CallDate=DD.FullDate 
+	    left join SASDEMO.DimGeography GEO 
+	    	ON CUS.GeographyKey=GEO.GeographyKey 
+	    left join SASDEMO.DimSeverifyType SEVT 
+	    	ON CDR.SeverityType_Key=SEVT.SeverityType_Key 
+	    left join SASDEMO.DimServiceType 	SERT 
+	    	ON CDR.ServiceType_Key=SERT.ServiceType_Key 
+	    left join SASDEMO.DimHandleType HANT 
+	    	ON CDR.HandleType_Key=HANT.HandleType_Key left 
+		join SASDEMO.DimAgent Agent on CDR.AgentKey=Agent.AgentID
+		left join SASDEMO.DimProduct PRO 
+			on CDR.ProductKey = PRO.Product_Key 
+		left join SASDEMO.DimProductGroup PRG 
+			on PRO.ProductGroup_Key = PRG.ProductGroup_Key ;
+quit;
+		
+/*Data Validation*/
+libname SASDEMO '/folders/myfolders/sasuser.v94/SASDEMO/';
+/*import for datavalidation, aka source/existing/old system/legency
+will use this dataset for Data Validation*/
+%web_drop_table(SASDEMO.CDR_DataValidation);
+FILENAME  CDR_DV  '/home/u47550450/sasuser.v94/SAS_CDR_DataValidation.csv';
+PROC IMPORT DATAFILE=  CDR_DV 
+	DBMS=CSV
+	OUT=SASDEMO.CDR_DataValidation;
+	GETNAMES=YES;
+RUN;
+PROC CONTENTS DATA=SASDEMO.CDR_DataValidation;
+ RUN;
+%web_open_table(SASDEMO.CDR_DataValidation);
+
+/*create source table aka existing/old system/legency*/
+proc sql;
+	create table Source as 
+	select *
+	from  SASDEMO.CDR_DATAVALIDATION;
+quit;
+
+/*create target table which means new development need to be validated*/
+proc sql;
+	create table target  as 
+	select *
+	from  SASDEMO.CDR_DATACHECK;
+quit;
+
+/*Source Minus Target which means observations(records exist in source but not in target)*/
+proc sql;
+	create table s_t as
+    select * from Source
+    except
+    select * from target;
+ quit;
+ 
+ /*Target Minus Source which means observations(records) exist in target but not in source)*/
+proc sql;
+	create table t_s as
+    select * from target
+    except
+    select * from Source;
+ quit;
+ 
+/*union two datasets as validation results*/
+proc sql;
+   create table validation_results as
+   select 'source' as ds_name,* from s_t
+   union all
+   select 'target' as ds_name,* from t_s;
+QUIT;
+
+/*sort the results by CDRID so that can see 
+ the difference between two observations 
+if they have the same CDRID*/
+PROC SORT DATA = validation_results OUT = validation_results  ;
+     BY   CDRID ;
+
+		</pre>
+
+		<br><br>
+
+	</body>
+</html>
